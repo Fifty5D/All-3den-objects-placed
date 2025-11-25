@@ -44,11 +44,6 @@ class PlacementConfig:
     category_color: Optional[tuple[int, int, int]] = None
     category_color_tolerance: int = 8
     category_icon_offset_x: int = -14
-    item_color: Optional[tuple[int, int, int]] = (142, 125, 18)
-    item_color_tolerance: int = 10
-    item_color_offset_x: int = 26
-    item_color_offset_y: int = 12
-    require_item_color: bool = True
     dry_run: bool = False
 
 
@@ -106,31 +101,6 @@ def is_category_row(list_x: int, list_y: int, cfg: PlacementConfig) -> bool:
         return False
 
 
-def row_has_item_color(list_x: int, list_y: int, cfg: PlacementConfig) -> bool:
-    """Check for the expected item text/icon color on the current row.
-
-    The default color matches the object rows shown in the reference screenshot
-    (#8e7d12). When ``require_item_color`` is true, a missing match causes the
-    row to be skipped. If ``item_color`` is ``None`` or checking is disabled,
-    the function returns True.
-    """
-
-    if cfg.item_color is None or not cfg.require_item_color:
-        return True
-
-    sample_x = list_x + cfg.item_color_offset_x
-    sample_y = list_y + cfg.item_color_offset_y
-    try:
-        return pyautogui.pixelMatchesColor(
-            sample_x,
-            sample_y,
-            cfg.item_color,
-            tolerance=cfg.item_color_tolerance,
-        )
-    except Exception:
-        return False
-
-
 def place_objects(cfg: PlacementConfig) -> None:
     """Drive the mouse to click each object and place it in a grid."""
 
@@ -167,11 +137,6 @@ def place_objects(cfg: PlacementConfig) -> None:
         list_pos = (list_start_x, list_start_y + row_in_view * cfg.row_height)
 
         if not cfg.dry_run and is_category_row(list_pos[0], list_pos[1], cfg):
-            index += 1
-            continue
-
-        if not cfg.dry_run and not row_has_item_color(list_pos[0], list_pos[1], cfg):
-            print(f"Skipping row {index}: item color not detected at {list_pos}.")
             index += 1
             continue
 
@@ -253,37 +218,6 @@ def parse_args(argv: list[str]) -> PlacementConfig:
         help="Horizontal offset from the entry label to sample the category triangle pixel",
     )
     parser.add_argument(
-        "--item-color",
-        type=int,
-        nargs=3,
-        metavar=("R", "G", "B"),
-        default=(142, 125, 18),
-        help="RGB value expected on valid item rows (defaults to #8e7d12)",
-    )
-    parser.add_argument(
-        "--item-color-tolerance",
-        type=int,
-        default=10,
-        help="Tolerance for matching the item row color",
-    )
-    parser.add_argument(
-        "--item-offset-x",
-        type=int,
-        default=26,
-        help="Horizontal offset from the entry label where the item color is sampled",
-    )
-    parser.add_argument(
-        "--item-offset-y",
-        type=int,
-        default=12,
-        help="Vertical offset from the top of the row where the item color is sampled",
-    )
-    parser.add_argument(
-        "--allow-missing-item-color",
-        action="store_true",
-        help="Click rows even if the expected item color is not detected",
-    )
-    parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Print planned clicks instead of moving the mouse (useful for validation)",
@@ -308,11 +242,6 @@ def parse_args(argv: list[str]) -> PlacementConfig:
         category_color=tuple(args.category_color) if args.category_color else None,
         category_color_tolerance=args.category_tolerance,
         category_icon_offset_x=args.category_offset_x,
-        item_color=tuple(args.item_color) if args.item_color else None,
-        item_color_tolerance=args.item_color_tolerance,
-        item_color_offset_x=args.item_offset_x,
-        item_color_offset_y=args.item_offset_y,
-        require_item_color=not args.allow_missing_item_color,
         dry_run=args.dry_run,
     )
 

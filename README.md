@@ -16,9 +16,6 @@ defaults are tuned for a 1920x1080 screen.
 4. (Recommended) Use a color picker on a category triangle (the little arrow
    next to categories like "1 - SSG Intel Items") and note its RGB values. This
    lets the script skip category rows instead of clicking them.
-5. The script also checks for the item-row color before clicking (`#8e7d12` by
-   default). If your UI skin differs, sample that color as well so only actual
-   object rows are chosen.
 
 ## Running the script
 Position your camera so clicks on the right-hand list are valid and your mouse
@@ -32,8 +29,7 @@ python main/place_objects.py anchor.png \
   --screen-height 1080 \
   --scroll-clicks-per-row 3 \
   --category-color 70 70 70 \
-  --category-offset-x -18 \
-  --item-color 142 125 18
+  --category-offset-x -18
 ```
 
 Key options:
@@ -47,9 +43,6 @@ Key options:
   list runs off-screen.
 - `--category-color` (with `--category-offset-x`) – RGB color and horizontal
   sample point for the category triangle so category headers are skipped.
-- `--item-color` (with `--item-offset-x` / `--item-offset-y`) – expected color on
-  valid item rows. Defaults to `#8e7d12` and is checked before clicking so
-  categories or empty rows are skipped.
 - `--dry-run` – print the planned clicks without moving the mouse (great for
   validation before running on a live editor).
 
