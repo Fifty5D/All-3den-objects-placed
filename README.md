@@ -16,9 +16,6 @@ defaults are tuned for a 1920x1080 screen.
 4. (Recommended) Use a color picker on a category triangle (the little arrow
    next to categories like "1 - SSG Intel Items") and note its RGB values. This
    lets the script skip category rows instead of clicking them.
-5. The script also checks for the item-row color before clicking (`#8e7d12` by
-   default). If your UI skin differs, sample that color (RGB or hex) so only
-   actual object rows are chosen.
 
 ## Running the script
 Position your camera so clicks on the right-hand list are valid and your mouse
@@ -31,9 +28,8 @@ python main/place_objects.py anchor.png \
   --spacing-pixels 140 \
   --screen-height 1080 \
   --scroll-clicks-per-row 3 \
-  --category-color-hex #464646 \
-  --category-offset-x -18 \
-  --item-color-hex #8e7d12
+  --category-color 70 70 70 \
+  --category-offset-x -18
 ```
 
 Key options:
@@ -47,17 +43,8 @@ Key options:
   list runs off-screen.
 - `--category-color` (with `--category-offset-x`) – RGB color and horizontal
   sample point for the category triangle so category headers are skipped.
-- `--category-color-hex` – hex alternative for the category color (e.g.,
-  `#464646`).
-- `--item-color` (with `--item-offset-x` / `--item-offset-y`) – expected color on
-  valid item rows. Defaults to `#8e7d12` and is checked before clicking so
-  categories or empty rows are skipped.
-- `--item-color-hex` – hex alternative for the item-row guard (e.g.,
-  `#8e7d12`).
 - `--dry-run` – print the planned clicks without moving the mouse (great for
   validation before running on a live editor).
-- `--log-sampled-colors` – print the sampled colors for each row so you can tune
-  offsets/tolerances when UI scaling or mods change the palette.
 
 ### Tips for reliable runs
 - The script automatically scrolls once the current row is past the visible
@@ -68,9 +55,6 @@ Key options:
 - To ignore categories entirely, omit `--category-color`. To skip them, sample
   the triangle color from your UI (RGB) and keep `--category-offset-x`
   negative so the pixel is read just left of the entry text.
-- If colors feel off (e.g., the script still lands on category rows), rerun
-  with `--log-sampled-colors` for a short batch. That will print the sampled
-  RGB values so you can update the hex/RGB arguments and tolerances.
 - `pyautogui.FAILSAFE` is enabled; move the mouse to the top-left corner to
   abort instantly.
 
